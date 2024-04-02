@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+namespace cmd {
+
 cvar_t cl_nopext = {
     "cl_nopext", "0",
     CVAR_NONE}; // Spike -- prevent autodetection of protocol extensions, so
@@ -904,3 +906,5 @@ int Cmd_CheckParm(const char *parm) {
 
   return 0;
 }
+
+} // namespace cmd

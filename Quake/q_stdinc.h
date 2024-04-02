@@ -29,9 +29,9 @@
 #ifndef __QSTDINC_H
 #define __QSTDINC_H
 
+#include <climits>
+#include <cstddef>
 #include <sys/types.h>
-#include <stddef.h>
-#include <limits.h>
 #ifndef _WIN32 /* others we support without sys/param.h? */
 #include <sys/param.h>
 #endif
@@ -51,93 +51,94 @@
    For this, we need stdint.h (or inttypes.h)
    FIXME: On some platforms, only inttypes.h is available.
    FIXME: Properly replace certain short and int usage
-	  with int16_t and int32_t.
+          with int16_t and int32_t.
  */
-#if defined(_MSC_VER) && (_MSC_VER < 1600)
-/* MS Visual Studio provides stdint.h only starting with
- * version 2010.  Even in VS2010, there is no inttypes.h.. */
-#include "msinttypes/stdint.h"
-#else
-#include <stdint.h>
-#endif
+#include <cstdint>
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <float.h>
-#include <assert.h>
+#include <cassert>
+#include <cfloat>
+#include <cstdarg>
+#include <cstdlib>
+#include <string>
 
 /*==========================================================================*/
 
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
+const uint8_t Q_MAXCHAR = 0x7f;
+const uint16_t Q_MAXSHORT = 0x7fff;
+const uint32_t Q_MAXINT = 0x7fffffff;
+const uint32_t Q_MAXLONG = 0x7fffffff;
+// #define Q_MAXCHAR  ((char)0x7f)
+// #define Q_MAXSHORT ((short)0x7fff)
+// #define Q_MAXINT   ((int)0x7fffffff)
+// #define Q_MAXLONG  ((int)0x7fffffff)
 
-#define Q_MAXCHAR  ((char)0x7f)
-#define Q_MAXSHORT ((short)0x7fff)
-#define Q_MAXINT   ((int)0x7fffffff)
-#define Q_MAXLONG  ((int)0x7fffffff)
-
-#define Q_MINCHAR  ((char)0x80)
-#define Q_MINSHORT ((short)0x8000)
-#define Q_MININT   ((int)0x80000000)
-#define Q_MINLONG  ((int)0x80000000)
+const uint8_t Q_MINCHAR = 0x80;
+const uint16_t Q_MINSHORT = 0x8000;
+const uint32_t Q_MININT = 0x80000000;
+const uint32_t Q_MINLONG = 0x80000000;
+//#define Q_MINCHAR ((char)0x80)
+//#define Q_MINSHORT ((short)0x8000)
+//#define Q_MININT ((int)0x80000000)
+//#define Q_MINLONG ((int)0x80000000)
 
 /* Make sure the types really have the right
  * sizes: These macros are from SDL headers.
  */
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-#define COMPILE_TIME_ASSERT(name, x) _Static_assert (x, #x)
+#define COMPILE_TIME_ASSERT(name, x) _Static_assert(x, #x)
 #else /* universal, but may trigger -Wunused-local-typedefs */
-#define COMPILE_TIME_ASSERT(name, x) typedef int dummy_##name[(x)*2 - 1]
+#define COMPILE_TIME_ASSERT(name, x) typedef int dummy_##name[(x) * 2 - 1]
 #endif
 
-COMPILE_TIME_ASSERT (char, sizeof (char) == 1);
-COMPILE_TIME_ASSERT (float, sizeof (float) == 4);
-COMPILE_TIME_ASSERT (long, sizeof (long) >= 4);
-COMPILE_TIME_ASSERT (int, sizeof (int) == 4);
-COMPILE_TIME_ASSERT (short, sizeof (short) == 2);
+//COMPILE_TIME_ASSERT(char, sizeof(char) == 1);
+//COMPILE_TIME_ASSERT(float, sizeof(float) == 4);
+//COMPILE_TIME_ASSERT(long, sizeof(long) >= 4);
+//COMPILE_TIME_ASSERT(int, sizeof(int) == 4);
+//COMPILE_TIME_ASSERT(short, sizeof(short) == 2);
 
 /* make sure enums are the size of ints for structure packing */
-typedef enum
-{
-	THE_DUMMY_VALUE
-} THE_DUMMY_ENUM;
-COMPILE_TIME_ASSERT (enum, sizeof (THE_DUMMY_ENUM) == sizeof (int));
+typedef enum { THE_DUMMY_VALUE } THE_DUMMY_ENUM;
+COMPILE_TIME_ASSERT(enum, sizeof(THE_DUMMY_ENUM) == sizeof(int));
 
 /* Provide a substitute for offsetof() if we don't have one.
  * This variant works on most (but not *all*) systems...
  */
-#ifndef offsetof
-#define offsetof(t, m) ((intptr_t) & (((t *)0)->m))
-#endif
+//#ifndef offsetof
+//#define offsetof(t, m) ((intptr_t) & (((t *)0)->m))
+//#endif
 
 /*==========================================================================*/
 
-typedef unsigned char byte;
+//typedef unsigned char byte;
+using byte = unsigned char;
 
-#undef true
-#undef false
-enum
-{
-	false = 0,
-	true = 1
-};
-typedef _Bool qboolean;
-COMPILE_TIME_ASSERT (falsehood, ((1 != 1) == false));
-COMPILE_TIME_ASSERT (truth, ((1 == 1) == true));
+//#undef true
+//#undef false
+//enum { false = 0, true = 1 };
+//typedef _Bool qboolean;
+//COMPILE_TIME_ASSERT(falsehood, ((1 != 1) == false));
+//COMPILE_TIME_ASSERT(truth, ((1 == 1) == true));
 
 /*==========================================================================*/
 
 /* math */
-typedef float vec_t;
-typedef vec_t vec2_t[2];
-typedef vec_t vec3_t[3];
-typedef vec_t vec4_t[4];
-typedef vec_t vec5_t[5];
-typedef int	  fixed4_t;
-typedef int	  fixed8_t;
-typedef int	  fixed16_t;
+//typedef float vec_t;
+//typedef vec_t vec2_t[2];
+//typedef vec_t vec3_t[3];
+//typedef vec_t vec4_t[4];
+//typedef vec_t vec5_t[5];
+//typedef int fixed4_t;
+//typedef int fixed8_t;
+//typedef int fixed16_t;
+
+using vec_t = float;
+using vec2_t = vec_t[2];
+using vec3_t = vec_t[3];
+using vec4_t = vec_t[4];
+using vec5_t = vec_t[5];
+using fixed4_t = int32_t;
+using fixed8_t = int32_t;
+using fixed16_t = int32_t;
 
 /*==========================================================================*/
 
@@ -173,12 +174,13 @@ typedef ptrdiff_t ssize_t;
 /* function attributes, etc */
 
 #if defined(__GNUC__)
-#define FUNC_PRINTF(x, y) __attribute__ ((__format__ (__printf__, x, y)))
+#define FUNC_PRINTF(x, y) __attribute__((__format__(__printf__, x, y)))
 #else
 #define FUNC_PRINTF(x, y)
 #endif
 
-/* argument format attributes for function pointers are supported for gcc >= 3.1 */
+/* argument format attributes for function pointers are supported for gcc >= 3.1
+ */
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define FUNCP_PRINTF FUNC_PRINTF
 #else
@@ -186,47 +188,43 @@ typedef ptrdiff_t ssize_t;
 #endif
 
 /* llvm's optnone function attribute started with clang-3.5.0 */
-#if defined(__clang__) && (__clang_major__ > 3 || (__clang_major__ == 3 && __clang_minor__ >= 5))
-#define FUNC_NO_OPTIMIZE __attribute__ ((__optnone__))
+#if defined(__clang__) &&                                                      \
+    (__clang_major__ > 3 || (__clang_major__ == 3 && __clang_minor__ >= 5))
+#define FUNC_NO_OPTIMIZE __attribute__((__optnone__))
 /* function optimize attribute is added starting with gcc 4.4.0 */
-#elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 3))
-#define FUNC_NO_OPTIMIZE __attribute__ ((__optimize__ ("0")))
+#elif defined(__GNUC__) &&                                                     \
+    (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 3))
+#define FUNC_NO_OPTIMIZE __attribute__((__optimize__("0")))
 #else
 #define FUNC_NO_OPTIMIZE
 #endif
 
 #if defined(__GNUC__)
-#define FUNC_NORETURN __attribute__ ((__noreturn__))
+#define FUNC_NORETURN __attribute__((__noreturn__))
 #elif defined(_MSC_VER) && (_MSC_VER >= 1200)
-#define FUNC_NORETURN __declspec (noreturn)
+#define FUNC_NORETURN __declspec(noreturn)
 #else
 #define FUNC_NORETURN
 #endif
 
-#if defined(__GNUC__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
-#define FUNC_NOINLINE __attribute__ ((__noinline__))
+#if defined(__GNUC__) &&                                                       \
+    ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+#define FUNC_NOINLINE __attribute__((__noinline__))
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
-#define FUNC_NOINLINE __declspec (noinline)
+#define FUNC_NOINLINE __declspec(noinline)
 #else
 #define FUNC_NOINLINE
 #endif
 
-#if defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5))
-#define FUNC_NOCLONE __attribute__ ((__noclone__))
+#if defined(__GNUC__) &&                                                \
+    ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5))
+#define FUNC_NOCLONE __attribute__((__noclone__))
 #else
 #define FUNC_NOCLONE
 #endif
 
-#if defined(_MSC_VER)
-#define inline __inline
-#endif /* _MSC_VER */
-
 /*==========================================================================*/
 
-#if defined(SDL_FRAMEWORK) || defined(NO_SDL_CONFIG)
 #include <SDL2/SDL.h>
-#else
-#include "SDL.h"
-#endif
 
 #endif /* __QSTDINC_H */

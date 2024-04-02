@@ -1,4 +1,4 @@
-project('vkquake', 'c', default_options : ['c_std=gnu17', 'buildtype=release'])
+project('vkquake', 'c', 'cpp', default_options : ['cpp_std=c++20', 'buildtype=release'])
 
 shaders = [
     'Shaders/alias.frag',
@@ -62,88 +62,88 @@ foreach shader : shaders
 endforeach
 
 srcs = [
-    'Quake/bgmusic.c',
-    'Quake/cd_null.c',
-    'Quake/cfgfile.c',
-    'Quake/chase.c',
-    'Quake/cl_demo.c',
-    'Quake/cl_input.c',
-    'Quake/cl_main.c',
-    'Quake/cl_parse.c',
-    'Quake/cl_tent.c',
-    'Quake/cmd.c',
-    'Quake/common.c',
-    'Quake/console.c',
-    'Quake/crc.c',
-    'Quake/cvar.c',
-    'Quake/gl_draw.c',
-    'Quake/gl_fog.c',
-    'Quake/gl_heap.c',
-    'Quake/gl_mesh.c',
-    'Quake/gl_model.c',
-    'Quake/gl_refrag.c',
-    'Quake/gl_rlight.c',
-    'Quake/gl_rmain.c',
-    'Quake/gl_rmisc.c',
-    'Quake/gl_screen.c',
-    'Quake/gl_sky.c',
-    'Quake/gl_texmgr.c',
-    'Quake/gl_vidsdl.c',
-    'Quake/gl_warp.c',
-    'Quake/host.c',
-    'Quake/host_cmd.c',
-    'Quake/image.c',
-    'Quake/in_sdl.c',
-    'Quake/keys.c',
-    'Quake/main_sdl.c',
-    'Quake/mathlib.c',
-    'Quake/mdfour.c',
-    'Quake/mem.c',
-    'Quake/menu.c',
-    'Quake/miniz.c',
-    'Quake/net_bsd.c',
-    'Quake/net_dgrm.c',
-    'Quake/net_loop.c',
-    'Quake/net_main.c',
-    'Quake/net_udp.c',
-    'Quake/palette.c',
-    'Quake/pl_linux.c',
-    'Quake/pr_cmds.c',
-    'Quake/pr_edict.c',
-    'Quake/pr_exec.c',
-    'Quake/pr_ext.c',
-    'Quake/r_alias.c',
-    'Quake/r_brush.c',
-    'Quake/r_part.c',
-    'Quake/r_part_fte.c',
-    'Quake/r_sprite.c',
-    'Quake/r_world.c',
-    'Quake/sbar.c',
-    'Quake/snd_codec.c',
-    'Quake/snd_dma.c',
-    'Quake/snd_mem.c',
-    'Quake/snd_mix.c',
-    'Quake/snd_sdl.c',
-    'Quake/snd_umx.c',
-    'Quake/snd_wave.c',
-    'Quake/strlcat.c',
-    'Quake/strlcpy.c',
-    'Quake/sv_main.c',
-    'Quake/sv_move.c',
-    'Quake/sv_phys.c',
-    'Quake/sv_user.c',
-	'Quake/sys_sdl.c',
-    'Quake/sys_sdl_unix.c',
-    'Quake/tasks.c',
-    'Quake/view.c',
-    'Quake/wad.c',
-    'Quake/world.c',
-	'Quake/hash_map.c',
-	'Quake/embedded_pak.c',
+    'Quake/bgmusic.cpp',
+    'Quake/cd_null.cpp',
+    'Quake/cfgfile.cpp',
+    'Quake/chase.cpp',
+    'Quake/cl_demo.cpp',
+    'Quake/cl_input.cpp',
+    'Quake/cl_main.cpp',
+    'Quake/cl_parse.cpp',
+    'Quake/cl_tent.cpp',
+    'Quake/cmd.cpp',
+    'Quake/common.cpp',
+    'Quake/console.cpp',
+    'Quake/crc.cpp',
+    'Quake/cvar.cpp',
+    'Quake/gl_draw.cpp',
+    'Quake/gl_fog.cpp',
+    'Quake/gl_heap.cpp',
+    'Quake/gl_mesh.cpp',
+    'Quake/gl_model.cpp',
+    'Quake/gl_refrag.cpp',
+    'Quake/gl_rlight.cpp',
+    'Quake/gl_rmain.cpp',
+    'Quake/gl_rmisc.cpp',
+    'Quake/gl_screen.cpp',
+    'Quake/gl_sky.cpp',
+    'Quake/gl_texmgr.cpp',
+    'Quake/gl_vidsdl.cpp',
+    'Quake/gl_warp.cpp',
+    'Quake/host.cpp',
+    'Quake/host_cmd.cpp',
+    'Quake/image.cpp',
+    'Quake/in_sdl.cpp',
+    'Quake/keys.cpp',
+    'Quake/main_sdl.cpp',
+    'Quake/mathlib.cpp',
+    'Quake/mdfour.cpp',
+    'Quake/mem.cpp',
+    'Quake/menu.cpp',
+    'Quake/miniz.cpp',
+    'Quake/net_bsd.cpp',
+    'Quake/net_dgrm.cpp',
+    'Quake/net_loop.cpp',
+    'Quake/net_main.cpp',
+    'Quake/net_udp.cpp',
+    'Quake/palette.cpp',
+    'Quake/pl_linux.cpp',
+    'Quake/pr_cmds.cpp',
+    'Quake/pr_edict.cpp',
+    'Quake/pr_exec.cpp',
+    'Quake/pr_ext.cpp',
+    'Quake/r_alias.cpp',
+    'Quake/r_brush.cpp',
+    'Quake/r_part.cpp',
+    'Quake/r_part_fte.cpp',
+    'Quake/r_sprite.cpp',
+    'Quake/r_world.cpp',
+    'Quake/sbar.cpp',
+    'Quake/snd_codec.cpp',
+    'Quake/snd_dma.cpp',
+    'Quake/snd_mem.cpp',
+    'Quake/snd_mix.cpp',
+    'Quake/snd_sdl.cpp',
+    'Quake/snd_umx.cpp',
+    'Quake/snd_wave.cpp',
+    'Quake/strlcat.cpp',
+    'Quake/strlcpy.cpp',
+    'Quake/sv_main.cpp',
+    'Quake/sv_move.cpp',
+    'Quake/sv_phys.cpp',
+    'Quake/sv_user.cpp',
+	'Quake/sys_sdl.cpp',
+    'Quake/sys_sdl_unix.cpp',
+    'Quake/tasks.cpp',
+    'Quake/view.cpp',
+    'Quake/wad.cpp',
+    'Quake/world.cpp',
+	'Quake/hash_map.cpp',
+	'Quake/embedded_pak.cpp',
 ]
 
-cflags = ['-Wall', '-Wno-trigraphs', '-Wno-unused-function', '-Werror']
-cc = meson.get_compiler('c')
+cppflags = ['-Wall', '-Wno-trigraphs', '-Wno-unused-function', '-Werror']
+cc = meson.get_compiler('cpp')
 deps = [
     cc.find_library('m', required : false),
     cc.find_library('dl', required : false),
@@ -162,30 +162,30 @@ else
 endif
 
 if get_option('use_codec_wave').enabled()
-    cflags += '-DUSE_CODEC_WAVE'
+    cppflags += '-DUSE_CODEC_WAVE'
 endif
 
 if get_option('mp3_lib') == 'mad'
     mp3_dep = dependency('mad', required : get_option('use_codec_mp3'))
     if mp3_dep.found()
-        srcs += [ 'Quake/snd_mp3.c', 'Quake/snd_mp3tag.c' ]
+        srcs += [ 'Quake/snd_mp3.cpp', 'Quake/snd_mp3tag.cpp' ]
         deps += mp3_dep
-        cflags += '-DUSE_CODEC_MP3'
+        cppflags += '-DUSE_CODEC_MP3'
     endif
 else
     mp3_dep = dependency('libmpg123', required : get_option('use_codec_mp3'))
     if mp3_dep.found()
-        srcs += [ 'Quake/snd_mpg123.c', 'Quake/snd_mp3tag.c' ]
+        srcs += [ 'Quake/snd_mpg123.cpp', 'Quake/snd_mp3tag.cpp' ]
         deps += mp3_dep
-        cflags += '-DUSE_CODEC_MP3'
+        cppflags += '-DUSE_CODEC_MP3'
     endif
 endif
 
 flac_dep = dependency('flac', required : get_option('use_codec_flac'))
 if flac_dep.found()
-    srcs += 'Quake/snd_flac.c'
+    srcs += 'Quake/snd_flac.cpp'
     deps += flac_dep
-    cflags += '-DUSE_CODEC_FLAC'
+    cppflags += '-DUSE_CODEC_FLAC'
 endif
 
 ogg_dep = dependency('ogg', required : get_option('use_codec_vorbis'))
@@ -193,33 +193,33 @@ if get_option('vorbis_lib') == 'vorbis'
     vorbisfile_dep = dependency('vorbisfile', required : get_option('use_codec_vorbis'))
     vorbis_dep = dependency('vorbis', required : get_option('use_codec_vorbis'))
     if ogg_dep.found() and vorbisfile_dep.found() and vorbis_dep.found()
-        srcs += 'Quake/snd_vorbis.c'
+        srcs += 'Quake/snd_vorbis.cpp'
         deps += [ ogg_dep, vorbisfile_dep, vorbis_dep ]
-        cflags += '-DUSE_CODEC_VORBIS'
+        cppflags += '-DUSE_CODEC_VORBIS'
     endif
 else
     vorbis_dep = dependency('vorbisidec', required : get_option('use_codec_vorbis'))
     if ogg_dep.found() and vorbis_dep.found()
-        srcs += 'Quake/snd_vorbis.c'
+        srcs += 'Quake/snd_vorbis.cpp'
         deps += [ ogg_dep, vorbis_dep ]
-        cflags += [ '-DUSE_CODEC_VORBIS', '-DVORBIS_USE_TREMOR' ]
+        cppflags += [ '-DUSE_CODEC_VORBIS', '-DVORBIS_USE_TREMOR' ]
     endif
 endif
 
 opus_dep = dependency('opus', required : get_option('use_codec_opus'))
 opusfile_dep = dependency('opusfile', required : get_option('use_codec_opus'))
 if opus_dep.found() and opusfile_dep.found()
-    srcs += 'Quake/snd_opus.c'
+    srcs += 'Quake/snd_opus.cpp'
     deps += [ opus_dep, opusfile_dep ]
-    cflags += '-DUSE_CODEC_OPUS'
+    cppflags += '-DUSE_CODEC_OPUS'
 endif
 
 if get_option('buildtype').startswith('debug')
-    cflags += '-D_DEBUG'
+    cppflags += '-D_DEBUG'
 endif
 
 if get_option('do_userdirs').enabled()
-    cflags += '-DDO_USERDIRS=1'
+    cppflags += '-DDO_USERDIRS=1'
 endif
 
-executable('vkquake', [srcs, shaders_c], dependencies : deps, c_args : cflags, c_pch: ['Quake/quakedef.h', 'Quake/quakedef.c'])
+executable('vkquake', [srcs, shaders_c], dependencies : deps, cpp_args : cppflags, cpp_pch: ['Quake/quakedef.h', 'Quake/quakedef.cpp'])

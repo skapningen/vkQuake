@@ -43,7 +43,7 @@ extern cvar_t hostname;
 extern double	 net_time;
 extern sizebuf_t net_message;
 extern int		 net_activeconnections;
-extern qboolean	 listening;
+extern bool	 listening;
 
 typedef char qhostaddr_t[NET_NAMELEN];
 
@@ -59,12 +59,12 @@ struct qsocket_s *NET_Connect (const char *host);
 double		NET_QSocketGetTime (const struct qsocket_s *sock);
 const char *NET_QSocketGetTrueAddressString (const struct qsocket_s *sock);
 const char *NET_QSocketGetMaskedAddressString (const struct qsocket_s *sock);
-qboolean	NET_QSocketGetProQuakeAngleHack (const struct qsocket_s *sock);
+bool	NET_QSocketGetProQuakeAngleHack (const struct qsocket_s *sock);
 int			NET_QSocketGetSequenceIn (const struct qsocket_s *sock);
 int			NET_QSocketGetSequenceOut (const struct qsocket_s *sock);
 void		NET_QSocketSetMSS (struct qsocket_s *s, int mss);
 
-qboolean NET_CanSendMessage (struct qsocket_s *sock);
+bool NET_CanSendMessage (struct qsocket_s *sock);
 // Returns true or false if the given qsocket can currently accept a
 // message to be transmitted.
 
@@ -103,8 +103,8 @@ void NET_Close (struct qsocket_s *sock);
 void NET_Poll (void);
 
 // Server list related globals:
-extern qboolean slistInProgress;
-extern qboolean slist_silent;
+extern bool slistInProgress;
+extern bool slist_silent;
 extern enum slistScope_e { SLIST_LOOP, SLIST_LAN, SLIST_INTERNET } slist_scope;
 
 extern size_t hostCacheCount;
@@ -116,9 +116,9 @@ const char *NET_SlistPrintServerName (size_t n);
 
 /* FIXME: driver related, but public:
  */
-extern qboolean ipxAvailable;
-extern qboolean ipv4Available;
-extern qboolean ipv6Available;
+extern bool ipxAvailable;
+extern bool ipv4Available;
+extern bool ipv6Available;
 extern char		my_ipx_address[NET_NAMELEN];
 extern char		my_ipv4_address[NET_NAMELEN];
 extern char		my_ipv6_address[NET_NAMELEN];
