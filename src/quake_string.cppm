@@ -19,6 +19,8 @@
  */
 
 module;
+#include <cstdarg>
+
 import memory;
 // #include <cstdint>
 #include <cstddef>
@@ -35,5 +37,12 @@ export char *strdup(const char *str) {
   memcpy(newstr, str, len);
   return newstr;
 }
+
+/* snprintf, vsnprintf : always use our versions. */
+export int snprintf(char *str, size_t size, const char *format, ...)
+    __attribute__((__format__(printf, 3, 4)));
+
+export int vsnprintf(char *str, size_t size, const char *format, va_list args)
+    __attribute__((__format__(printf, 3, 0)));
 
 } // namespace quakestring

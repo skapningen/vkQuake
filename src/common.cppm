@@ -242,11 +242,6 @@ char *q_strlwr(char *str);
 char *q_strupr(char *str);
 
 
-/* snprintf, vsnprintf : always use our versions. */
-// int q_snprintf(char *str, size_t size, const char *format, ...)
-// FUNC_PRINTF(3, 4);
-// int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-// FUNC_PRINTF(3, 0);
 
 //============================================================================
 

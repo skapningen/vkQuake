@@ -2,6 +2,7 @@ add_executable(vkquake)
 target_sources(
   vkquake
   PRIVATE memory-impl-linux.cpp
+          cvar-impl.cpp
   PRIVATE FILE_SET
           quake_modules
           TYPE

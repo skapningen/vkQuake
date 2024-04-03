@@ -173,56 +173,15 @@ CVar *find_var_after(const char *prev_name, uint32_t with_flags) {
 // these two accept a cvar pointer instead of a var name,
 // but are otherwise identical to the "non-Quick" versions.
 // the cvar MUST be registered.
-void set_quick(CVar *var, const char *value) {
-  if (var->flags & (ROM | LOCKED))
-    return;
-  if (!(var->flags & REGISTERED))
-    return;
-
-  if (!var->string)
-    var->string = quakestring::strdup(value);
-  else {
-    int len;
-
-    if (!strcmp(var->string, value))
-      return; // no change
-
-    var->flags |= CHANGED;
-    len = strlen(value);
-    if (len != strlen(var->string)) {
-      memory::free((void *)var->string);
-      var->string = (char *)memory::alloc(len + 1);
-    }
-    memcpy((char *)var->string, value, len + 1);
-  }
-
-  var->value = atof(var->string);
-
-  // johnfitz -- save initial value for "reset" command
-  if (!var->default_string)
-    var->default_string = quakestring::strdup(var->string);
-  // johnfitz -- during initialization, update default too
-  else if (!host_initialized) {
-    //	Sys_Printf("changing default of %s: %s -> %s\n",
-    //		   var->name, var->default_string, var->string);
-    memory::free((void *)var->default_string);
-    var->default_string = quakestring::strdup(var->string);
-  }
-  // johnfitz
-
-  if (var->callback)
-    var->callback(var);
-  if (var->flags & AUTOCVAR)
-    PR_AutoCvarChanged(var);
-}
+void set_quick(CVar *var, const char *value);
 
 void set_value_quick(CVar *var, const float value) {
   char val[32], *ptr = val;
 
   if (value == (float)((int)value))
-    q_snprintf(val, sizeof(val), "%i", (int)value);
+    quakestring::snprintf(val, sizeof(val), "%i", (int)value);
   else {
-    q_snprintf(val, sizeof(val), "%f", value);
+    quakestring::snprintf(val, sizeof(val), "%f", value);
     // kill trailing zeroes
     while (*ptr)
       ptr++;
