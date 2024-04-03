@@ -63,19 +63,11 @@
 
 /*==========================================================================*/
 
-const uint8_t Q_MAXCHAR = 0x7f;
-const uint16_t Q_MAXSHORT = 0x7fff;
-const uint32_t Q_MAXINT = 0x7fffffff;
-const uint32_t Q_MAXLONG = 0x7fffffff;
 // #define Q_MAXCHAR  ((char)0x7f)
 // #define Q_MAXSHORT ((short)0x7fff)
 // #define Q_MAXINT   ((int)0x7fffffff)
 // #define Q_MAXLONG  ((int)0x7fffffff)
 
-const uint8_t Q_MINCHAR = 0x80;
-const uint16_t Q_MINSHORT = 0x8000;
-const uint32_t Q_MININT = 0x80000000;
-const uint32_t Q_MINLONG = 0x80000000;
 //#define Q_MINCHAR ((char)0x80)
 //#define Q_MINSHORT ((short)0x8000)
 //#define Q_MININT ((int)0x80000000)
@@ -131,14 +123,6 @@ using byte = unsigned char;
 //typedef int fixed8_t;
 //typedef int fixed16_t;
 
-using vec_t = float;
-using vec2_t = vec_t[2];
-using vec3_t = vec_t[3];
-using vec4_t = vec_t[4];
-using vec5_t = vec_t[5];
-using fixed4_t = int32_t;
-using fixed8_t = int32_t;
-using fixed16_t = int32_t;
 
 /*==========================================================================*/
 

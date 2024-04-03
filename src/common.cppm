@@ -20,81 +20,85 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifndef _Q_COMMON_H
-#define _Q_COMMON_H
-
 // comndef.h  -- general definitions
 
-// #undef min
-// #undef max
+module;
+#include <cerrno>
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
 
-//TODO: replace with standard templates
-#define GENERIC_TYPES(x, separator)                                            \
-  x(int, i) separator x(unsigned int, u)                                       \
-  separator x(long, l)                                                         \
-  separator x(unsigned long, ul)                                               \
-  separator x(long long, ll)                                                   \
-  separator x(unsigned long long, ull)                                         \
-  separator x(float, f)                                                        \
-  separator x(double, d)
+export module common;
+import quakestddef;
 
-#define COMMA ,
-#define NO_COMMA
+export namespace common {
 
-#define IMPL_GENERIC_FUNCS(type, suffix)                                       \
-  static inline type q_min_##suffix(type a, type b) {                          \
-    return (a < b) ? a : b;                                                    \
-  }                                                                            \
-  static inline type q_max_##suffix(type a, type b) {                          \
-    return (a > b) ? a : b;                                                    \
-  }                                                                            \
-  static inline type clamp_##suffix(type minval, type val, type maxval) {      \
-    return (val < minval) ? minval : ((val > maxval) ? maxval : val);          \
-  }
+// TODO: replace with standard templates
+// #define GENERIC_TYPES(x, separator) \
+  //x(int, i) separator x(unsigned int, u) \
+  //separator x(long, l) \
+  //separator x(unsigned long, ul) \
+  //separator x(long long, ll) \
+  //separator x(unsigned long long, ull) \
+  //separator x(float, f) \ separator x(double, d)
 
-GENERIC_TYPES(IMPL_GENERIC_FUNCS, NO_COMMA)
+// #define COMMA ,
+// #define NO_COMMA
 
-#define SELECT_Q_MIN(type, suffix)                                             \
-  type:                                                                        \
-  q_min_##suffix
-#define q_min(a, b)                                                            \
-  _Generic((a) + (b), GENERIC_TYPES(SELECT_Q_MIN, COMMA))(a, b)
+//#define IMPL_GENERIC_FUNCS(type, suffix)                                       \
+  //static inline type q_min_##suffix(type a, type b) {                          \
+    //return (a < b) ? a : b;                                                    \
+  //}                                                                            \
+  //static inline type q_max_##suffix(type a, type b) {                          \
+    //return (a > b) ? a : b;                                                    \
+  //}                                                                            \
+  //static inline type clamp_##suffix(type minval, type val, type maxval) {      \
+    //return (val < minval) ? minval : ((val > maxval) ? maxval : val);          \
+  //}
 
-#define SELECT_Q_MAX(type, suffix)                                             \
-  type:                                                                        \
-  q_max_##suffix
-#define q_max(a, b)                                                            \
-  _Generic((a) + (b), GENERIC_TYPES(SELECT_Q_MAX, COMMA))(a, b)
+// GENERIC_TYPES(IMPL_GENERIC_FUNCS, NO_COMMA)
 
-#define SELECT_CLAMP(type, suffix)                                             \
-  type:                                                                        \
-  clamp_##suffix
-#define CLAMP(minval, val, maxval)                                             \
-  _Generic((minval) + (val) + (maxval),                                        \
-      GENERIC_TYPES(SELECT_CLAMP, COMMA))(minval, val, maxval)
+//#define SELECT_Q_MIN(type, suffix)                                             \
+  //type:                                                                        \
+  //q_min_##suffix
+//#define q_min(a, b)                                                            \
+  //_Generic((a) + (b), GENERIC_TYPES(SELECT_Q_MIN, COMMA))(a, b)
 
-#define GENERIC_INT_TYPES(x, separator)                                        \
-  x(int, i) separator x(unsigned int, u)                                       \
-  separator x(long, l)                                                         \
-  separator x(unsigned long, ul)                                               \
-  separator x(long long, ll)                                                   \
-  separator x(unsigned long long, ull)
+//#define SELECT_Q_MAX(type, suffix)                                             \
+  //type:                                                                        \
+  //q_max_##suffix
+//#define q_max(a, b)                                                            \
+  //_Generic((a) + (b), GENERIC_TYPES(SELECT_Q_MAX, COMMA))(a, b)
 
-#define IMPL_GENERIC_INT_FUNCS(type, suffix)                                   \
-  static inline type q_align_##suffix(type size, type alignment) {             \
-    return ((size & (alignment - 1)) == 0)                                     \
-               ? size                                                          \
-               : (size + alignment - (size & (alignment - 1)));                \
-  }
+//#define SELECT_CLAMP(type, suffix)                                             \
+  //type:                                                                        \
+  //clamp_##suffix
+//#define CLAMP(minval, val, maxval)                                             \
+  //_Generic((minval) + (val) + (maxval),                                        \
+      //GENERIC_TYPES(SELECT_CLAMP, COMMA))(minval, val, maxval)
 
-GENERIC_INT_TYPES(IMPL_GENERIC_INT_FUNCS, NO_COMMA)
+//#define GENERIC_INT_TYPES(x, separator)                                        \
+  //x(int, i) separator x(unsigned int, u)                                       \
+  //separator x(long, l)                                                         \
+  //separator x(unsigned long, ul)                                               \
+  //separator x(long long, ll)                                                   \
+  //separator x(unsigned long long, ull)
 
-#define SELECT_ALIGN(type, suffix)                                             \
-  type:                                                                        \
-  q_align_##suffix
-#define q_align(size, alignment)                                               \
-  _Generic((size) + (alignment),                                               \
-      GENERIC_INT_TYPES(SELECT_ALIGN, COMMA))(size, alignment)
+//#define IMPL_GENERIC_INT_FUNCS(type, suffix)                                   \
+  //static inline type q_align_##suffix(type size, type alignment) {             \
+    //return ((size & (alignment - 1)) == 0)                                     \
+               //? size                                                          \
+               //: (size + alignment - (size & (alignment - 1)));                \
+  //}
+
+// GENERIC_INT_TYPES(IMPL_GENERIC_INT_FUNCS, NO_COMMA)
+
+//#define SELECT_ALIGN(type, suffix)                                             \
+  //type:                                                                        \
+  //q_align_##suffix
+//#define q_align(size, alignment)                                               \
+  //_Generic((size) + (alignment),                                               \
+      //GENERIC_INT_TYPES(SELECT_ALIGN, COMMA))(size, alignment)
 // clang-format on
 
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
@@ -115,7 +119,7 @@ GENERIC_INT_TYPES(IMPL_GENERIC_INT_FUNCS, NO_COMMA)
 typedef struct sizebuf_s {
   bool allowoverflow; // if false, do a Sys_Error
   bool overflowed;    // set to true if the buffer size failed
-  byte *data;
+  uint8_t *data;
   int maxsize;
   int cursize;
 } sizebuf_t;
@@ -141,7 +145,7 @@ void InsertLinkAfter(link_t *l, link_t *after);
 // (type *)STRUCT_FROM_LINK(link_t *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this mess!
-#define STRUCT_FROM_LINK(l, t, m) ((t *)((byte *)l - offsetof(t, m)))
+#define STRUCT_FROM_LINK(l, t, m) ((t *)((uint8_t *)l - offsetof(t, m)))
 
 //============================================================================
 
@@ -187,7 +191,7 @@ const char *MSG_ReadString(void);
 float MSG_ReadCoord(unsigned int flags);
 float MSG_ReadAngle(unsigned int flags);
 float MSG_ReadAngle16(unsigned int flags);       // johnfitz
-byte *MSG_ReadData(unsigned int length);         // spike
+uint8_t *MSG_ReadData(unsigned int length);      // spike
 unsigned int MSG_ReadEntity(unsigned int pext2); // spike
 
 void COM_Effectinfo_Enumerate(
@@ -222,14 +226,14 @@ char *q_strupr(char *str);
 char *q_strdup(const char *str);
 
 /* snprintf, vsnprintf : always use our versions. */
-int q_snprintf(char *str, size_t size, const char *format, ...)
-    FUNC_PRINTF(3, 4);
-int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-    FUNC_PRINTF(3, 0);
+// int q_snprintf(char *str, size_t size, const char *format, ...)
+// FUNC_PRINTF(3, 4);
+// int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
+// FUNC_PRINTF(3, 0);
 
 //============================================================================
 
-extern THREAD_LOCAL char com_token[1024];
+extern thread_local char com_token[1024];
 extern bool com_eof;
 
 const char *COM_Parse(const char *data);
@@ -261,7 +265,7 @@ const char *COM_FileGetExtension(const char *in); /* doesn't return NULL */
 void COM_ExtractExtension(const char *in, char *out, size_t outsize);
 void COM_CreatePath(char *path);
 
-char *va(const char *format, ...) FUNC_PRINTF(1, 2);
+char *va(const char *format, ...) __attribute__((__format__(__printf__, 1, 2)));
 // does a varargs printf into a temp buffer
 
 unsigned COM_HashString(const char *str);
@@ -303,12 +307,12 @@ typedef struct searchpath_s {
 extern searchpath_t *com_searchpaths;
 extern searchpath_t *com_base_searchpaths;
 
-extern THREAD_LOCAL int com_filesize;
+extern thread_local int com_filesize;
 struct cache_user_s;
 
 extern char com_basedir[MAX_OSPATH];
 extern char com_gamedir[MAX_OSPATH];
-extern THREAD_LOCAL int
+extern thread_local int
     file_from_pak; // global indicating that file came from a pak
 
 const char *COM_GetGameNames(bool full);
@@ -321,12 +325,12 @@ int COM_FOpenFile(const char *filename, FILE **file, unsigned int *path_id);
 bool COM_FileExists(const char *filename, unsigned int *path_id);
 void COM_CloseFile(int h);
 
-byte *COM_LoadFile(const char *path, unsigned int *path_id);
+uint8_t *COM_LoadFile(const char *path, unsigned int *path_id);
 
 // Opens the given path directly, ignoring search paths.
 // Returns NULL on failure, or else a '\0'-terminated malloc'ed buffer.
 // Loads in "t" mode so CRLF to LF translation is performed on Windows.
-byte *COM_LoadMallocFile_TextMode_OSPath(const char *path, long *len_out);
+uint8_t *COM_LoadMallocFile_TextMode_OSPath(const char *path, long *len_out);
 
 // Attempts to parse an int, followed by a newline.
 // Returns advanced buffer position.
@@ -341,6 +345,7 @@ const char *COM_ParseFloatNewline(const char *buffer, float *value);
 // newline. Returns advanced buffer position.
 const char *COM_ParseStringNewline(const char *buffer);
 
+namespace fs {
 #define FS_ENT_NONE (0)
 #define FS_ENT_FILE (1 << 0)
 #define FS_ENT_DIRECTORY (1 << 1)
@@ -348,31 +353,170 @@ const char *COM_ParseStringNewline(const char *buffer);
 /* The following FS_*() stdio replacements are necessary if one is
  * to perform non-sequential reads on files reopened on pak files
  * because we need the bookkeeping about file start/end positions.
- * Allocating and filling in the fshandle_t structure is the users'
+ * Allocating and filling in the Handle structure is the users'
  * responsibility when the file is initially opened. */
 
-typedef struct _fshandle_t {
+struct Handle {
   FILE *file;
-  bool pak; /* is the file read from a pak */
-  long start;   /* file or data start position */
-  long length;  /* file or data size */
-  long pos;     /* current position relative to start */
-} fshandle_t;
+  bool pak;       /* is the file read from a pak */
+  int32_t start;  /* file or data start position */
+  int32_t length; /* file or data size */
+  int32_t pos;    /* current position relative to start */
+};
 
-size_t FS_fread(void *ptr, size_t size, size_t nmemb, fshandle_t *fh);
-int FS_fseek(fshandle_t *fh, long offset, int whence);
-long FS_ftell(fshandle_t *fh);
-void FS_rewind(fshandle_t *fh);
-int FS_feof(fshandle_t *fh);
-int FS_ferror(fshandle_t *fh);
-int FS_fclose(fshandle_t *fh);
-int FS_fgetc(fshandle_t *fh);
-char *FS_fgets(char *s, int size, fshandle_t *fh);
-long FS_filelength(fshandle_t *fh);
+size_t fread(void *ptr, size_t size, size_t nmemb, Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return 0;
+  }
+  if (!ptr) {
+    errno = EFAULT;
+    return 0;
+  }
+  if (!size || !nmemb) { /* no error, just zero bytes wanted */
+    errno = 0;
+    return 0;
+  }
+
+  int32_t byte_size = nmemb * size;
+  if (byte_size > fh->length - fh->pos) /* just read to end */
+    byte_size = fh->length - fh->pos;
+  int32_t bytes_read = fread(ptr, 1, byte_size, fh->file);
+  fh->pos += bytes_read;
+
+  /* fread() must return the number of elements read,
+   * not the total number of bytes. */
+  int32_t nmemb_read = bytes_read / size;
+  /* even if the last member is only read partially
+   * it is counted as a whole in the return value. */
+  if (bytes_read % size)
+    nmemb_read++;
+
+  return nmemb_read;
+}
+
+int32_t fseek(Handle *fh, long offset, int32_t whence) {
+  /* I don't care about 64 bit off_t or fseeko() here.
+   * the quake/hexen2 file system is 32 bits, anyway. */
+
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+
+  /* the relative file position shouldn't be smaller
+   * than zero or bigger than the filesize. */
+  switch (whence) {
+  case SEEK_SET:
+    break;
+  case SEEK_CUR:
+    offset += fh->pos;
+    break;
+  case SEEK_END:
+    offset = fh->length + offset;
+    break;
+  default:
+    errno = EINVAL;
+    return -1;
+  }
+
+  if (offset < 0) {
+    errno = EINVAL;
+    return -1;
+  }
+
+  if (offset > fh->length) /* just seek to end */
+    offset = fh->length;
+
+  int32_t ret = fseek(fh->file, fh->start + offset, SEEK_SET);
+  if (ret < 0)
+    return ret;
+
+  fh->pos = offset;
+  return 0;
+}
+
+int32_t ftell(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+  return fh->pos;
+}
+
+void rewind(Handle *fh) {
+  if (!fh)
+    return;
+  clearerr(fh->file);
+  fseek(fh->file, fh->start, SEEK_SET);
+  fh->pos = 0;
+}
+
+int32_t feof(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+  if (fh->pos >= fh->length)
+    return -1;
+  return 0;
+}
+
+int32_t ferror(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+  return ferror(fh->file);
+}
+
+int32_t fclose(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+  return fclose(fh->file);
+}
+
+int32_t fgetc(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return EOF;
+  }
+  if (fh->pos >= fh->length)
+    return EOF;
+  fh->pos += 1;
+  return fgetc(fh->file);
+}
+
+char *fgets(char *s, int size, Handle *fh) {
+  char *ret;
+
+  if (feof(fh))
+    return nullptr;
+
+  if (size > (fh->length - fh->pos) + 1)
+    size = (fh->length - fh->pos) + 1;
+
+  ret = fgets(s, size, fh->file);
+  fh->pos = ftell(fh->file) - fh->start;
+
+  return ret;
+}
+
+int32_t filelength(Handle *fh) {
+  if (!fh) {
+    errno = EBADF;
+    return -1;
+  }
+  return fh->length;
+}
+
+} // namespace fs
 
 extern struct cvar_s registered;
 extern bool standard_quake, rogue, hipnotic;
 extern bool fitzmode;
 /* if true, run in fitzquake mode disabling custom quakespasm hacks */
 
-#endif /* _Q_COMMON_H */
+} // namespace common

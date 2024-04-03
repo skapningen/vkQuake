@@ -23,4 +23,4 @@ include(StandardProjectSettings)
 #find_package(utf8cpp REQUIRED)
 
 
-add_subdirectory(Quake)
+add_subdirectory(src)

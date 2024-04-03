@@ -1,5 +1,5 @@
 /*
- * cfgfile.c -- misc reads from the config file
+ * cfgfile.h -- misc reads from the config file
  *
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -20,17 +20,65 @@
  */
 
 module;
-#include "quakedef.h"
+#include <cstring>
+#include <cstdio>
 
-export module Cfg;
+export module cfg;
+import common;
+
+static common::fs::Handle *cfg_file;
 
 export namespace cfg {
 
-static fshandle_t *cfg_file;
+// closes the currently open config file.
+void close_config(void) {
+  if (cfg_file) {
+    common::fs::fclose(cfg_file);
+    Mem_Free(cfg_file);
+    cfg_file = nullptr;
+  }
+}
+
+// opens the given config file. only one open config file is
+// kept: previosly opened one, if any, will be closed.
+int open_config(const char *cfg_name) {
+  FILE *f = nullptr;
+  long length;
+  bool pak = false;
+
+  close_config();
+
+  if (multiuser) {
+    char *pref_path = SDL_GetPrefPath("", "vkQuake");
+    f = fopen(va("%s/config.cfg", pref_path), "rb");
+    SDL_free(pref_path);
+  }
+  if (f) {
+    fseek(f, 0, SEEK_END);
+    length = ftell(f);
+    fseek(f, 0, SEEK_SET);
+  } else {
+    length = (long)COM_FOpenFile(cfg_name, &f, NULL);
+    pak = file_from_pak;
+    if (length == -1)
+      return -1;
+  }
+
+  cfg_file = (fshandle_t *)Mem_Alloc(sizeof(fshandle_t));
+  cfg_file->file = f;
+  cfg_file->start = ftell(f);
+  cfg_file->pos = 0;
+  cfg_file->length = length;
+  cfg_file->pak = pak;
+
+  return 0;
+}
 
 /*
 ===================
-CFG_ReadCvars
+read_cvars
+reads the values of cvars in the given list from the opened
+config file.
 
 used for doing early reads from config.cfg searching the list
 of given cvar names for the user-set values. a temporary
@@ -39,7 +87,7 @@ the num_vars argument must be the exact number of strings in the
 array, otherwise I have nothing against going out of bounds.
 ===================
 */
-void CFG_ReadCvars(const char **vars, int num_vars) {
+void read_cvars(const char **vars, int num_vars) {
   char buff[1024], *tmp;
   int i, j;
 
@@ -107,14 +155,18 @@ void CFG_ReadCvars(const char **vars, int num_vars) {
 
 /*
 ===================
-CFG_ReadCvarOverrides
+read_cvar_overrides
+convenience function, reading the "+" command line override
+values of cvars in the given list. doesn't do anything with
+the config file. call this after CFG_ReadCvars() and before
+locking your cvars.
 
 convenience function, reading the "+" command line override
 values of cvars in the given list. doesn't do anything with
 the config file.
 ===================
 */
-void CFG_ReadCvarOverrides(const char **vars, int num_vars) {
+void read_cvar_overrides(const char **vars, int num_vars) {
   char buff[64];
   int i, j;
 
@@ -131,47 +183,6 @@ void CFG_ReadCvarOverrides(const char **vars, int num_vars) {
         Cvar_Set(vars[i], com_argv[j + 1]);
     }
   }
-}
-
-void CFG_CloseConfig(void) {
-  if (cfg_file) {
-    FS_fclose(cfg_file);
-    Mem_Free(cfg_file);
-    cfg_file = NULL;
-  }
-}
-
-int CFG_OpenConfig(const char *cfg_name) {
-  FILE *f = nullptr;
-  long length;
-  bool pak = false;
-
-  CFG_CloseConfig();
-
-  if (multiuser) {
-    char *pref_path = SDL_GetPrefPath("", "vkQuake");
-    f = fopen(va("%s/config.cfg", pref_path), "rb");
-    SDL_free(pref_path);
-  }
-  if (f) {
-    fseek(f, 0, SEEK_END);
-    length = ftell(f);
-    fseek(f, 0, SEEK_SET);
-  } else {
-    length = (long)COM_FOpenFile(cfg_name, &f, NULL);
-    pak = file_from_pak;
-    if (length == -1)
-      return -1;
-  }
-
-  cfg_file = (fshandle_t *)Mem_Alloc(sizeof(fshandle_t));
-  cfg_file->file = f;
-  cfg_file->start = ftell(f);
-  cfg_file->pos = 0;
-  cfg_file->length = length;
-  cfg_file->pak = pak;
-
-  return 0;
 }
 
 } // namespace cfg

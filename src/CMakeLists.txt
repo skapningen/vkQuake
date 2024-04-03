@@ -1,7 +1,3 @@
-# if(LINUX) list(APPEND IMPL_SOURCES
-# "${CMAKE_CURRENT_LIST_DIR}/impl/PlatformUnix.cpp"
-# "${CMAKE_CURRENT_LIST_DIR}/impl/PlatformSDL.cpp") endif()
-
 add_executable(vkquake)
 target_sources(
   vkquake
@@ -12,7 +8,9 @@ target_sources(
          TYPE
          CXX_MODULES
          FILES
-            Quake/
+            cfgfile.cppm
+            common.cppm
+            quake_stddef.cppm
          )
 
 #target_include_directories(engine PUBLIC "${PROJECT_SOURCE_DIR}/include")
