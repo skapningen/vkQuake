@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void SCR_Init (void);
 void SCR_LoadPics (void);
 
-void SCR_UpdateScreen (qboolean use_tasks);
+void SCR_UpdateScreen (bool use_tasks);
 void SCR_UpdateZoom (void);
 
 void SCR_CenterPrintClear (void);
@@ -46,7 +46,7 @@ extern float scr_conlines; // lines of console to display
 
 extern int sb_lines;
 
-extern qboolean scr_disabled_for_loading;
+extern bool scr_disabled_for_loading;
 
 extern cvar_t scr_viewsize;
 

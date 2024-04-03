@@ -111,20 +111,20 @@ typedef struct {
 
   // demo recording info must be here, because record is started before
   // entering a map (and clearing client_state_t)
-  qboolean demorecording;
-  qboolean demoplayback;
+  bool demorecording;
+  bool demoplayback;
 
   // did the user pause demo playback? (separate from cl.paused because we don't
   // want a svc_setpause inside the demo to actually pause demo playback).
-  qboolean demopaused;
-  qboolean demoseeking;
+  bool demopaused;
+  bool demoseeking;
   float seektime;
   float demospeed;
 
   // demo file position where the current level starts (after signon packets)
   size_t demo_prespawn_end;
 
-  qboolean timedemo;
+  bool timedemo;
   int forcetrack; // -1 = use normal cd track
   FILE *demofile;
   int td_lastframe;   // to meter out one message a frame
@@ -187,16 +187,16 @@ typedef struct {
   // pitch drifting vars
   float idealpitch;
   float pitchvel;
-  qboolean nodrift;
+  bool nodrift;
   float driftmove;
   double laststop;
 
   float viewheight;
   float crouch; // local amount for smoothing stepups
 
-  qboolean paused; // send over by server
-  qboolean onground;
-  qboolean inwater;
+  bool paused; // send over by server
+  bool onground;
+  bool inwater;
   double fixangle_time; // timestamp of last svc_setangle message
 
   int intermission;   // don't change view angle, full screen, etc
@@ -250,7 +250,7 @@ typedef struct {
   unsigned protocol_pext2; // spike -- flag of fte protocol extensions
 
 #ifdef PSET_SCRIPT
-  qboolean protocol_particles;
+  bool protocol_particles;
   struct {
     const char *name;
     int index;
@@ -262,8 +262,8 @@ typedef struct {
 #endif
   int ackframes[8]; // big enough to cover burst
   unsigned int ackframes_count;
-  qboolean requestresend;
-  qboolean sendprespawn;
+  bool requestresend;
+  bool sendprespawn;
 
   qcvm_t qcvm; // for csqc.
 
@@ -368,7 +368,7 @@ void CL_AccumulateCmd(void);
 void CL_SendCmd(void);
 void CL_SendMove(const usercmd_t *cmd);
 int CL_ReadFromServer(void);
-qboolean CL_AngleLocked(void);
+bool CL_AngleLocked(void);
 void CL_AdjustAngles(void);
 void CL_BaseMove(usercmd_t *cmd);
 void CL_FinishMove(usercmd_t *cmd);
@@ -393,7 +393,7 @@ void CL_Stop_f(void);
 void CL_Record_f(void);
 void CL_PlayDemo_f(void);
 void CL_TimeDemo_f(void);
-void CL_Resume_Record(qboolean recordsignons);
+void CL_Resume_Record(bool recordsignons);
 
 //
 // cl_parse.c
