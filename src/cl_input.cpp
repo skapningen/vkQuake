@@ -62,7 +62,7 @@ void KeyDown(kbutton_t *b) {
   int k;
   const char *c;
 
-  c = Cmd_Argv(1);
+  c = cmd::Argv(1);
   if (c[0])
     k = atoi(c);
   else
@@ -89,7 +89,7 @@ void KeyUp(kbutton_t *b) {
   int k;
   const char *c;
 
-  c = Cmd_Argv(1);
+  c = cmd::Argv(1);
   if (c[0])
     k = atoi(c);
   else { // typed manually at the console, assume for unsticking, so clear all
@@ -155,7 +155,7 @@ void IN_UseUp(void) { KeyUp(&in_use); }
 void IN_JumpDown(void) { KeyDown(&in_jump); }
 void IN_JumpUp(void) { KeyUp(&in_jump); }
 
-void IN_Impulse(void) { in_impulse = atoi(Cmd_Argv(1)); }
+void IN_Impulse(void) { in_impulse = atoi(cmd::Argv(1)); }
 
 /*
 ===============
@@ -169,7 +169,7 @@ Returns 0.25 if a key was pressed and released during the frame,
 */
 float CL_KeyState(kbutton_t *key) {
   float val;
-  qboolean impulsedown, impulseup, down;
+  bool impulsedown, impulseup, down;
 
   impulsedown = key->state & 2;
   impulseup = key->state & 4;
@@ -230,7 +230,7 @@ CL_AngleLocked
 Returns true if the server sent a fixangle recently
 ==============
 */
-qboolean CL_AngleLocked(void) {
+bool CL_AngleLocked(void) {
   return cl.fixangle_time == cl.mtime[0] || cl.fixangle_time == cl.mtime[1];
 }
 

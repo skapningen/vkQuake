@@ -107,15 +107,15 @@ void RemoveCommand(cmd_function_t *cmd);
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
 #define Cmd_AddCommand(cmdname, func)                                          \
-  Cmd_AddCommand2(cmdname, func, src_command) // regular console commands
+  AddCommand2(cmdname, func, src_command) // regular console commands
 #define Cmd_AddCommand_ClientCommand(cmdname, func)                            \
-  Cmd_AddCommand2(                                                             \
+  AddCommand2(                                                             \
       cmdname, func,                                                           \
       src_client) // command is meant to be safe for anyone to execute.
 #define Cmd_AddCommand_ServerCommand(cmdname, func)                            \
-  Cmd_AddCommand2(cmdname, func, src_server) // command came from a server
+  AddCommand2(cmdname, func, src_server) // command came from a server
 #define Cmd_AddCommand_Console                                                 \
-  Cmd_AddCommand // to make the disabiguation more obvious
+  AddCommand // to make the disabiguation more obvious
 
 bool AliasExists(const char *aliasname);
 bool Exists(const char *cmd_name);
