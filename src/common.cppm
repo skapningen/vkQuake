@@ -30,11 +30,30 @@ module;
 
 export module common;
 import quakestddef;
+import memory;
+import cvar;
+
+static char *largv[MAX_NUM_ARGVS + 1];
+static char argvdummy[] = " ";
+
+int32_t safemode;
+
+cvar::CVar registered = {
+    "registered", "1",
+    cvar::ROM}; /* set to correct value in COM_CheckRegistered() */
+cvar::CVar cmdline = {"cmdline", "",
+                  cvar::ROM /*|CVAR_SERVERINFO*/}; /* sending cmdline upon
+                                                     CCREQ_RULE_INFO is evil */
+
+static bool com_modified; // set true if using non-id files
+
+bool fitzmode;
+bool multiuser;
 
 export namespace common {
 
 // TODO: replace with standard templates
-// #define GENERIC_TYPES(x, separator) \
+//  #define GENERIC_TYPES(x, separator) \
   //x(int, i) separator x(unsigned int, u) \
   //separator x(long, l) \
   //separator x(unsigned long, ul) \
@@ -222,8 +241,6 @@ char *q_strcasestr(const char *haystack, const char *needle);
 char *q_strlwr(char *str);
 char *q_strupr(char *str);
 
-// strdup that calls Mem_Alloc
-char *q_strdup(const char *str);
 
 /* snprintf, vsnprintf : always use our versions. */
 // int q_snprintf(char *str, size_t size, const char *format, ...)

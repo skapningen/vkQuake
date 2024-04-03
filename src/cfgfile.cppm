@@ -25,6 +25,7 @@ module;
 
 export module cfg;
 import common;
+import memory;
 
 static common::fs::Handle *cfg_file;
 
@@ -34,7 +35,7 @@ export namespace cfg {
 void close_config(void) {
   if (cfg_file) {
     common::fs::fclose(cfg_file);
-    Mem_Free(cfg_file);
+    memory::free(cfg_file);
     cfg_file = nullptr;
   }
 }

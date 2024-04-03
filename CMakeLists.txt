@@ -12,6 +12,7 @@ include(CMakePrintHelpers)
 include(StandardProjectSettings)
 
 # dependencies
+find_package(mimalloc REQUIRED)
 #find_package(SDL2 REQUIRED)
 #find_package(DevIL REQUIRED)
 #find_package(Angelscript REQUIRED)
