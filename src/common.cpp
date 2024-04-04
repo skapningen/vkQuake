@@ -24,10 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 module;
 #include <cerrno>
+#include <cstdarg>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
-#include <cstdarg>
 
 export module common;
 import quakestddef;
@@ -54,7 +54,7 @@ bool multiuser;
 export namespace common {
 
 // TODO: replace with standard templates
-//    #define GENERIC_TYPES(x, separator) \
+//     #define GENERIC_TYPES(x, separator) \
   //x(int, i) separator x(unsigned int, u) \
   //separator x(long, l) \
   //separator x(unsigned long, ul) \
@@ -153,16 +153,33 @@ void SZ_Print(sizebuf_t *buf, const char *data); // strcats onto the sizebuf
 
 //============================================================================
 
-typedef struct link_s {
-  struct link_s *prev, *next;
-} link_t;
+struct Link {
+  Link *prev, *next;
+};
 
-void ClearLink(link_t *l);
-void RemoveLink(link_t *l);
-void InsertLinkBefore(link_t *l, link_t *before);
-void InsertLinkAfter(link_t *l, link_t *after);
+// ClearLink is used for new headnodes
+void clear_link(Link *l) { l->prev = l->next = l; }
 
-// (type *)STRUCT_FROM_LINK(link_t *link, type, member)
+void remove_link(Link *l) {
+  l->next->prev = l->prev;
+  l->prev->next = l->next;
+}
+
+void insert_link_before(Link *l, Link *before) {
+  l->next = before;
+  l->prev = before->prev;
+  l->prev->next = l;
+  l->next->prev = l;
+}
+
+void insert_link_after(Link *l, Link *after) {
+  l->next = after->next;
+  l->prev = after;
+  l->prev->next = l;
+  l->next->prev = l;
+}
+
+// (type *)STRUCT_FROM_LINK(Link *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this mess!
 #define STRUCT_FROM_LINK(l, t, m) ((t *)((uint8_t *)l - offsetof(t, m)))
@@ -190,7 +207,7 @@ void MSG_WriteAngle(sizebuf_t *sb, float f, unsigned int flags);
 void MSG_WriteAngle16(sizebuf_t *sb, float f, unsigned int flags); // johnfitz
 void MSG_WriteEntity(sizebuf_t *sb, unsigned int index,
                      unsigned int pext2); // spike
-struct entity_state_s;
+//struct entity_state_s;
 void MSG_WriteStaticOrBaseLine(sizebuf_t *buf, int idx,
                                struct entity_state_s *state,
                                unsigned int protocol_pext2,

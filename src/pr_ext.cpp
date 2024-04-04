@@ -1,4 +1,3 @@
-/* vim: set tabstop=4: */
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 Copyright (C) 2016      Spike

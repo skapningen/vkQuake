@@ -12,11 +12,13 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
-          # cfgfile.cppm command.cppm 
+          # cfgfile.cpp command.cpp
           common.cpp
           console.cpp
           cvar.cpp
           memory.cpp
+          progs.cpp
+          pr_comp.cpp
           quake_stddef.cpp
           quake_string.cpp)
 
