@@ -1,19 +1,20 @@
 add_executable(vkquake)
 target_sources(
   vkquake
-  PRIVATE memory-impl-linux.cpp
-          cvar-impl.cpp
+  PRIVATE command-impl.cpp console-impl.cpp cvar-impl.cpp memory-impl-linux.cpp
   PRIVATE FILE_SET
           quake_modules
           TYPE
           CXX_MODULES
           FILES
           cfgfile.cppm
+          command.cppm
           common.cppm
+          console.cppm
+          cvar.cppm
+          memory.cppm
           quake_stddef.cppm
           quake_string.cppm
-          memory.cppm
-          cvar.cppm
           )
 
 # target_include_directories(engine PUBLIC "${PROJECT_SOURCE_DIR}/include")
