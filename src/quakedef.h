@@ -235,16 +235,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define DOUBLE_BUFFERED 2
 
-typedef struct {
-  const char *basedir;
-  const char *userdir; // user's directory on UNIX platforms.
-                       // if user directories are enabled, basedir
-                       // and userdir will point to different
-                       // memory locations, otherwise to the same.
-  int argc;
-  char **argv;
-  int errstate;
-} quakeparms_t;
+//typedef struct {
+  //const char *basedir;
+  //const char *userdir; // user's directory on UNIX platforms.
+                       //// if user directories are enabled, basedir
+                       //// and userdir will point to different
+                       //// memory locations, otherwise to the same.
+  //int argc;
+  //char **argv;
+  //int errstate;
+//} quakeparms_t;
 
 // johnfitz -- stuff for 2d drawing control
 typedef enum {

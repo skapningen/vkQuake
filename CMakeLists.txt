@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.28)
 
 # TODO: maybe move project() to src and the executables
 project(

@@ -28,7 +28,6 @@ module;
 
 export module cvar;
 import quakestring;
-import memory;
 
 /*
 cvar_t variables are used to hold scalar or string variables that can
@@ -95,35 +94,13 @@ export constexpr uint32_t AUTOCVAR =
     1U << 18; // cvar changes need to feed back to qc global changes.
 export constexpr uint32_t SETA = 1U << 19; // cvar will be saved with seta.
 
-// #define CVAR_NONE 0
-// #define CVAR_ARCHIVE (1U << 0) // if set, causes it to be saved to config
-// #define CVAR_NOTIFY (1U << 1) // changes will be broadcasted to all players
-// (q1)
-// #define CVAR_SERVERINFO \ (1U << 2) // added to serverinfo will be sent to
-// clients (q1/net_dgrm.c and
-//// qwsv)
-// #define CVAR_USERINFO \ (1U << 3) // added to userinfo, will be sent to
-// server (qwcl)
-//  #define CVAR_CHANGED (1U << 4)
-//  #define CVAR_ROM (1U << 6)
-// #define CVAR_LOCKED (1U << 8)      // locked temporarily
-// #define CVAR_REGISTERED (1U << 10) // the var is added to the list of
-// variables #define CVAR_CALLBACK (1U << 16)   // var has a callback
-// #define CVAR_USERDEFINED \ (1U << 17) // cvar was created by the user/mod,
-// and needs to be saved a bit
-//// differently.
-// #define CVAR_AUTOCVAR \ (1U << 18) // cvar changes need to feed back to qc
-// global changes.
-// #define CVAR_SETA (1U << 19) // cvar will be saved with seta.
-
-// typedef void (*cvarcallback_t)(struct cvar_s *);
-struct CVar;
+export struct CVar;
 using CVarCallback = void (*)(CVar *);
 
 struct CVar {
   const char *name;
   const char *string;
-  unsigned int flags;
+  int32_t flags;
   float value;
   const char
       *default_string; // johnfitz -- remember defaults for reset function
@@ -194,34 +171,7 @@ void set_value_quick(CVar *var, const float value) {
 
 void register_variable(CVar *variable);
 
-/*
-============
-create -- spike
-
-Creates a cvar if it does not already exist, otherwise does nothing.
-Must not be used until after all other cvars are registered.
-Cvar will be persistent.
-
-creates+registers a cvar, otherwise just returns it.
-============
-*/
-CVar *create(const char *name, const char *value) {
-  CVar *newvar;
-  newvar = find_var(name);
-  if (newvar)
-    return newvar; // already exists.
-  if (Cmd_Exists(name))
-    return nullptr; // error! panic! oh noes!
-
-  newvar = alloc(sizeof(CVar) + strlen(name) + 1);
-  newvar->name = (char *)(newvar + 1);
-  strcpy((char *)(newvar + 1), name);
-  newvar->flags = USERDEFINED;
-
-  newvar->string = value;
-  register_variable(newvar);
-  return newvar;
-}
+CVar *create(const char *name, const char *value);
 
 /*
 ============
@@ -251,9 +201,9 @@ void set_value(const char *var_name, const float value) {
   char val[32], *ptr = val;
 
   if (value == (float)((int)value))
-    q_snprintf(val, sizeof(val), "%i", (int)value);
+    quakestring::snprintf(val, sizeof(val), "%i", (int)value);
   else {
-    q_snprintf(val, sizeof(val), "%f", value);
+    quakestring::snprintf(val, sizeof(val), "%f", value);
     // kill trailing zeroes
     while (*ptr)
       ptr++;
@@ -311,11 +261,12 @@ double variable_value(const char *var_name) {
 /*
 ============
 Cvar_VariableString
-// returns an empty string if not defined
+
+returns an empty string if not defined
 ============
 */
 const char *variable_string(const char *var_name) {
-  CVar *var find_var(var_name);
+  CVar *var = find_var(var_name);
   if (!var)
     return cvar_null_string;
   return var->string;
@@ -376,9 +327,11 @@ void set_f(void);
 
 void toggle_f(void);
 
-void cycle_f(void) {
+void cycle_f(void);
 
-void reset_f(void) {
+void reset_f(void);
+
+void reset(const char *name);
 
 /*
 ============
@@ -405,22 +358,7 @@ void reset_cfg_f(void) {
       reset(var->name);
 }
 
-/*
-============
-Cvar_Init -- johnfitz
-============
-*/
-void init(void) {
-  Cmd_AddCommand("cvarlist", list_f);
-  Cmd_AddCommand("toggle", toggle_f);
-  Cmd_AddCommand("cycle", cycle_f);
-  Cmd_AddCommand("inc", inc_f);
-  Cmd_AddCommand("reset", reset_f);
-  Cmd_AddCommand("resetall", reset_all_f);
-  Cmd_AddCommand("resetcfg", reset_cfg_f);
-  Cmd_AddCommand("set", set_f);
-  Cmd_AddCommand("seta", set_f);
-}
+void init(void);
 
 /*
 ============
@@ -446,7 +384,5 @@ const char *complete_variable(const char *partial) {
 
   return nullptr;
 }
-
-void reset(const char *name);
 
 } // namespace cvar

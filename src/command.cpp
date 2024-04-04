@@ -20,8 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifndef _QUAKE_CMD_H
-#define _QUAKE_CMD_H
+module;
+
+export module command;
 
 // cmd.h -- Command buffer and command execution
 
@@ -39,7 +40,7 @@ The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 
 */
 
-namespace cmd {
+namespace command {
 
 void Cbuf_Init(void);
 // allocates an initial text buffer that will grow as needed

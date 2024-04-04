@@ -22,11 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 module;
 #include <cstring>
+#include <cstdlib>
 
 module cvar;
 import memory;
 import console;
-import command;
+//import command;
 
 namespace cvar {
 
@@ -59,12 +60,13 @@ void set_quick(CVar *var, const char *value) {
   if (!var->default_string)
     var->default_string = quakestring::strdup(var->string);
   // johnfitz -- during initialization, update default too
-  else if (!host_initialized) {
-    //	Sys_Printf("changing default of %s: %s -> %s\n",
-    //		   var->name, var->default_string, var->string);
-    memory::free((void *)var->default_string);
-    var->default_string = quakestring::strdup(var->string);
-  }
+  // TODO: remove this dependency on host module
+  //else if (!host_initialized) {
+    ////	Sys_Printf("changing default of %s: %s -> %s\n",
+    ////		   var->name, var->default_string, var->string);
+    //memory::free((void *)var->default_string);
+    //var->default_string = quakestring::strdup(var->string);
+  //}
   // johnfitz
 
   if (var->callback)
@@ -358,6 +360,51 @@ void reset(const char *name) {
     console::printf("variable \"%s\" not found\n", name);
   else
     set_quick(var, var->default_string);
+}
+
+/*
+============
+create -- spike
+
+Creates a cvar if it does not already exist, otherwise does nothing.
+Must not be used until after all other cvars are registered.
+Cvar will be persistent.
+
+creates+registers a cvar, otherwise just returns it.
+============
+*/
+CVar *create(const char *name, const char *value) {
+  CVar *newvar = find_var(name);
+  if (newvar)
+    return newvar; // already exists.
+  if (command::exists(name))
+    return nullptr; // error! panic! oh noes!
+
+  newvar = memory::alloc(sizeof(CVar) + strlen(name) + 1);
+  newvar->name = (char *)(newvar + 1);
+  strcpy((char *)(newvar + 1), name);
+  newvar->flags = USERDEFINED;
+
+  newvar->string = value;
+  register_variable(newvar);
+  return newvar;
+}
+
+/*
+============
+Cvar_Init -- johnfitz
+============
+*/
+void init(void) {
+  Cmd_AddCommand("cvarlist", list_f);
+  Cmd_AddCommand("toggle", toggle_f);
+  Cmd_AddCommand("cycle", cycle_f);
+  Cmd_AddCommand("inc", inc_f);
+  Cmd_AddCommand("reset", reset_f);
+  Cmd_AddCommand("resetall", reset_all_f);
+  Cmd_AddCommand("resetcfg", reset_cfg_f);
+  Cmd_AddCommand("set", set_f);
+  Cmd_AddCommand("seta", set_f);
 }
 
 }
