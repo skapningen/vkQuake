@@ -25,6 +25,8 @@ module;
 #include <cstdlib>
 
 module cvar;
+import quakestring;
+import common;
 import memory;
 import console;
 //import command;
@@ -73,6 +75,23 @@ void set_quick(CVar *var, const char *value) {
     var->callback(var);
   if (var->flags & AUTOCVAR)
     PR_AutoCvarChanged(var);
+}
+
+void set_value_quick(CVar *var, const float value) {
+  char val[32], *ptr = val;
+
+  if (value == (float)((int)value))
+    common::snprintf(val, sizeof(val), "%i", (int)value);
+  else {
+    common::snprintf(val, sizeof(val), "%f", value);
+    // kill trailing zeroes
+    while (*ptr)
+      ptr++;
+    while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
+      *ptr = '\0';
+  }
+
+  set_quick(var, val);
 }
 
 /*
@@ -124,7 +143,7 @@ void register_variable(CVar *variable) {
   variable->flags |= REGISTERED;
 
   // copy the value off, because future sets will Mem_Free it
-  q_strlcpy(value, variable->string, sizeof(value));
+  quakestring::strlcpy(value, variable->string, sizeof(value));
   variable->string = nullptr;
   variable->default_string = nullptr;
 
@@ -155,6 +174,30 @@ void set(const char *var_name, const char *value) {
   }
 
   set_quick(var, value);
+}
+
+/*
+============
+Cvar_SetValue
+
+expands value to a string and calls set
+============
+*/
+void set_value(const char *var_name, const float value) {
+  char val[32], *ptr = val;
+
+  if (value == (float)((int)value))
+    common::snprintf(val, sizeof(val), "%i", (int)value);
+  else {
+    common::snprintf(val, sizeof(val), "%f", value);
+    // kill trailing zeroes
+    while (*ptr)
+      ptr++;
+    while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
+      *ptr = '\0';
+  }
+
+  set(var_name, val);
 }
 
 /*

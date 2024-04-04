@@ -22,10 +22,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // console.c
 
 module;
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <time.h>
+#include <SDL2/SDL_mutex.h>
+#include <cstdint>
+#include <algorithm>
+
+// #include <fcntl.h>
+// #include <sys/stat.h>
+// #include <sys/types.h>
+// #include <time.h>
 
 module console;
 import cvar;
@@ -38,13 +42,13 @@ namespace console {
 #include <unistd.h>
 #endif
 
-
-int32_t con_linewidth;
+uint32_t con_linewidth;
 
 float con_cursorspeed = 4;
 
-CVar con_notifytime = {"con_notifytime", "3", CVAR_NONE};         // seconds
-CVar con_logcenterprint = {"con_logcenterprint", "1", CVAR_NONE}; // johnfitz
+cvar::CVar con_notifytime = {"con_notifytime", "3", cvar::NONE}; // seconds
+cvar::CVar con_logcenterprint = {"con_logcenterprint", "1",
+                                 cvar::NONE}; // johnfitz
 
 int32_t con_buffersize; // johnfitz -- user can now override default
 
@@ -67,7 +71,7 @@ constexpr uint32_t CON_MINSIZE =
 // default, now the minimum size
 
 constexpr size_t NUM_CON_TIMES = 4;
-//#define NUM_CON_TIMES 4
+// #define NUM_CON_TIMES 4
 float con_times[NUM_CON_TIMES]; // realtime time the line was generated
                                 // for transparent notify lines
 
@@ -85,16 +89,16 @@ than the console
 includes a newline, unless len >= con_linewidth.
 ================
 */
-const char *quakebar(int len) {
+const char *quakebar(uint32_t len) {
   static char bar[42];
-  int i;
 
-  len = q_min(len, (int)sizeof(bar) - 2);
-  len = q_min(len, con_linewidth);
+  len = std::min(len, (uint32_t)sizeof(bar) - 2);
+  len = std::min(len, con_linewidth);
 
   bar[0] = '\35';
-  for (i = 1; i < len - 1; i++)
+  for (size_t i = 1; i < len - 1; i++) {
     bar[i] = '\36';
+  }
   bar[len - 1] = '\37';
 
   if (len < con_linewidth) {
@@ -625,7 +629,8 @@ Con_CenterPrintf -- johnfitz -- pad each line with spaces to make it appear
 centered
 ================
 */
-void center_printf(int linewidth, const char *fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
+void center_printf(int linewidth, const char *fmt, ...)
+    __attribute__((__format__(__printf__, 2, 3)));
 void center_printf(int linewidth, const char *fmt, ...) {
   va_list argptr;
   char msg[MAXPRINTMSG];  // the original message

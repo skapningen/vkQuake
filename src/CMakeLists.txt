@@ -3,6 +3,7 @@ target_sources(
   vkquake
   PRIVATE
   #command-impl.cpp 
+  #common-impl.cpp
   console-impl.cpp 
   cvar-impl.cpp 
   #memory-impl-linux.cpp
@@ -11,7 +12,8 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
-          # cfgfile.cppm command.cppm common.cppm
+          # cfgfile.cppm command.cppm 
+          common.cpp
           console.cpp
           cvar.cpp
           memory.cpp

@@ -27,7 +27,7 @@ module;
 #include <cstdlib>
 
 export module cvar;
-import quakestring;
+//import common;
 
 /*
 cvar_t variables are used to hold scalar or string variables that can
@@ -152,22 +152,7 @@ CVar *find_var_after(const char *prev_name, uint32_t with_flags) {
 // the cvar MUST be registered.
 void set_quick(CVar *var, const char *value);
 
-void set_value_quick(CVar *var, const float value) {
-  char val[32], *ptr = val;
-
-  if (value == (float)((int)value))
-    quakestring::snprintf(val, sizeof(val), "%i", (int)value);
-  else {
-    quakestring::snprintf(val, sizeof(val), "%f", value);
-    // kill trailing zeroes
-    while (*ptr)
-      ptr++;
-    while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
-      *ptr = '\0';
-  }
-
-  set_quick(var, val);
-}
+void set_value_quick(CVar *var, const float value);
 
 void register_variable(CVar *variable);
 
@@ -190,29 +175,7 @@ void set_callback(CVar *var, CVarCallback func) {
 
 void set(const char *var_name, const char *value);
 
-/*
-============
-Cvar_SetValue
-
-expands value to a string and calls set
-============
-*/
-void set_value(const char *var_name, const float value) {
-  char val[32], *ptr = val;
-
-  if (value == (float)((int)value))
-    quakestring::snprintf(val, sizeof(val), "%i", (int)value);
-  else {
-    quakestring::snprintf(val, sizeof(val), "%f", value);
-    // kill trailing zeroes
-    while (*ptr)
-      ptr++;
-    while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
-      *ptr = '\0';
-  }
-
-  set(var_name, val);
-}
+void set_value(const char *var_name, const float value);
 
 /*
 ============
