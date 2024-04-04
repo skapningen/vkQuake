@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 module;
+#include <cstddef>
 #include <cstdint>
 
 export module progscompiler;
@@ -46,17 +47,17 @@ export {
     ev_ext_integer
   };
 
-#define OFS_NULL 0
-#define OFS_RETURN 1
-#define OFS_PARM0 4 // leave 3 ofs for each parm to hold vectors
-#define OFS_PARM1 7
-#define OFS_PARM2 10
-#define OFS_PARM3 13
-#define OFS_PARM4 16
-#define OFS_PARM5 19
-#define OFS_PARM6 22
-#define OFS_PARM7 25
-#define RESERVED_OFS 28
+  constexpr uint32_t OFS_NULL = 0;
+  constexpr uint32_t OFS_RETURN = 1;
+  constexpr uint32_t OFS_PARM0 = 4; // leave 3 ofs for each parm to hold vectors
+  constexpr uint32_t OFS_PARM1 = 7;
+  constexpr uint32_t OFS_PARM2 = 10;
+  constexpr uint32_t OFS_PARM3 = 13;
+  constexpr uint32_t OFS_PARM4 = 16;
+  constexpr uint32_t OFS_PARM5 = 19;
+  constexpr uint32_t OFS_PARM6 = 22;
+  constexpr uint32_t OFS_PARM7 = 25;
+  constexpr uint32_t RESERVED_OFS = 28;
 
   enum {
     OP_DONE,
@@ -136,60 +137,63 @@ export {
     OP_BITOR
   };
 
-  typedef struct statement_s {
-    unsigned short op;
-    short a, b, c;
-  } dstatement_t;
+  struct dstatement_t {
+    uint16_t op;
+    int16_t a, b, c;
+  };
 
-  typedef struct {
-    unsigned short type; // if DEF_SAVEGLOBAL bit is set
-                         // the variable needs to be saved in savegames
-    unsigned short ofs;
-    int s_name;
-  } ddef_t;
+  struct ddef_t {
+    uint16_t type; // if DEF_SAVEGLOBAL bit is set
+                   // the variable needs to be saved in savegames
+    uint16_t ofs;
+    int32_t s_name;
+  };
 
-#define DEF_SAVEGLOBAL (1 << 15)
+  constexpr uint32_t DEF_SAVEGLOBAL = 1 << 15;
+  // #define DEF_SAVEGLOBAL (1 << 15)
 
-#define MAX_PARMS 8
+  constexpr size_t MAX_PARMS = 8;
+  // #define MAX_PARMS 8
 
-  typedef struct {
-    int first_statement; // negative numbers are builtins
-    int parm_start;
-    int locals; // total ints of parms + locals
+  struct dfunction_t {
+    int32_t first_statement; // negative numbers are builtins
+    int32_t parm_start;
+    int32_t locals; // total ints of parms + locals
 
-    int profile; // runtime
+    int32_t profile; // runtime
 
-    int s_name;
-    int s_file; // source file defined in
+    int32_t s_name;
+    int32_t s_file; // source file defined in
 
-    int numparms;
+    int32_t numparms;
     uint8_t parm_size[MAX_PARMS];
-  } dfunction_t;
+  };
 
-#define PROG_VERSION 6
-  typedef struct {
-    int version;
-    int crc; // check of header file
+  constexpr int32_t PROG_VERSION = 6;
+  // #define PROG_VERSION 6
+  struct dprograms_t {
+    int32_t version;
+    int32_t crc; // check of header file
 
-    int ofs_statements;
-    int numstatements; // statement 0 is an error
+    int32_t ofs_statements;
+    int32_t numstatements; // statement 0 is an error
 
-    int ofs_globaldefs;
-    int numglobaldefs;
+    int32_t ofs_globaldefs;
+    int32_t numglobaldefs;
 
-    int ofs_fielddefs;
-    int numfielddefs;
+    int32_t ofs_fielddefs;
+    int32_t numfielddefs;
 
-    int ofs_functions;
-    int numfunctions; // function 0 is an empty
+    int32_t ofs_functions;
+    int32_t numfunctions; // function 0 is an empty
 
-    int ofs_strings;
-    int numstrings; // first string is a null string
+    int32_t ofs_strings;
+    int32_t numstrings; // first string is a null string
 
-    int ofs_globals;
-    int numglobals;
+    int32_t ofs_globals;
+    int32_t numglobals;
 
-    int entityfields;
-  } dprograms_t;
+    int32_t entityfields;
+  };
 
 } // namespace progscompiler

@@ -29,6 +29,7 @@ import quakestring;
 import common;
 import memory;
 import console;
+import progs;
 //import command;
 
 namespace cvar {

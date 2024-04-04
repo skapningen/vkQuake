@@ -7,6 +7,7 @@ target_sources(
   console-impl.cpp 
   cvar-impl.cpp 
   #memory-impl-linux.cpp
+  progs-edict-impl.cpp
   PUBLIC FILE_SET
           quake_modules
           TYPE
