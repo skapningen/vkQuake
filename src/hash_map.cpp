@@ -19,13 +19,95 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 module;
+#include <algorithm>
 #include <cstdint>
+#include <mimalloc-new-delete.h>
 
 export module hashmap;
+import memory;
 
 namespace hashmap {
 
-struct hash_map_t;
+constexpr size_t MIN_KEY_VALUE_STORAGE_SIZE = 16;
+constexpr size_t MIN_HASH_SIZE = 32;
+
+// hash_map_t
+template <typename K, typename V> struct HashMap {
+  using HasherType = uint32_t (*)(const K &);
+  using CompareType = bool (*)(const K &, const K &);
+  using IndexSize = std::size_t;
+
+  std::size_t num_entries{0};
+  uint32_t hash_size{0};
+  std::size_t key_value_storage_size{0};
+  HasherType hasher{nullptr};
+  CompareType comp{nullptr};
+  IndexSize *hash_to_index{nullptr};
+  std::size_t *index_chain{nullptr};
+  void *keys{nullptr};
+  void *values{nullptr};
+
+  HashMap(HasherType hasher, CompareType comp) : hasher{hasher}, comp{comp} {}
+
+  void expand_key_value_storage(const std::size_t new_size) {
+    keys = memory::realloc(keys, new_size * sizeof(K));
+    values = memory::realloc(values, new_size * sizeof(V));
+    index_chain = memory::realloc(index_chain, new_size * sizeof(std::size_t));
+    key_value_storage_size = new_size;
+  }
+
+  void rehash(const std::size_t new_size) {
+    if (hash_size >= new_size) {
+      return;
+    }
+    hash_size = new_size;
+    hash_to_index =
+        memory::realloc(hash_to_index, hash_size * sizeof(IndexSize));
+    memset(hash_to_index, 0xFF, hash_size * sizeof(IndexSize));
+    for (std::size_t i{}; i < num_entries; ++i) {
+      void *key = GetKeyImpl(map, i);
+      const uint32_t hash = hasher(key);
+      const uint32_t hash_index = hash & (hash_size - 1);
+      index_chain[i] = hash_to_index[hash_index];
+      hash_to_index[hash_index] = i;
+    }
+  }
+
+  bool insert(const K &key, const V &value) {
+    if (num_entries >= key_value_storage_size) {
+      expand_key_value_storage(
+          std::max(key_value_storage_size * 2, MIN_KEY_VALUE_STORAGE_SIZE));
+    }
+    if ((num_entries + (num_entries / 4)) >= hash_size) {
+      rehash(std::max(hash_size * 2, MIN_HASH_SIZE));
+    }
+
+    //const uint32_t hash = hasher(key);
+    // hash_size is always a power of 2
+    const uint32_t hash_index = hasher(key) & (hash_size - 1);
+    {
+      uint32_t storage_index = hash_to_index[hash_index];
+      // check for collision
+      while (storage_index != UINT32_MAX) {
+        const void *const storage_key = GetKeyImpl(map, storage_index);
+        if (comp ? comp(key, storage_key)
+                      : (memcmp(key, storage_key, key_size) == 0)) {
+          memcpy(GetValueImpl(map, storage_index), value, value_size);
+          return true;
+        }
+        storage_index = index_chain[storage_index];
+      }
+    }
+
+    index_chain[num_entries] = hash_to_index[hash_index];
+    hash_to_index[hash_index] = num_entries;
+    memcpy(GetKeyImpl(map, map->num_entries), key, key_size);
+    memcpy(GetValueImpl(map, map->num_entries), value, value_size);
+    ++num_entries;
+
+    return false;
+  }
+};
 
 hash_map_t *CreateImpl(const uint32_t key_size, const uint32_t value_size,
                        uint32_t (*hasher)(const void *const),

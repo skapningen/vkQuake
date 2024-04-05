@@ -19,29 +19,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 module;
+#include <cstdint>
 
 module hashmap;
+import memory;
 
 //#include "quakedef.h"
 
 namespace hashmap {
 
-#define MIN_KEY_VALUE_STORAGE_SIZE 16
-#define MIN_HASH_SIZE 32
-
-struct hash_map_t {
-  uint32_t num_entries;
-  uint32_t hash_size;
-  uint32_t key_value_storage_size;
-  uint32_t key_size;
-  uint32_t value_size;
-  uint32_t (*hasher)(const void *const);
-  qboolean (*comp)(const void *const, const void *const);
-  uint32_t *hash_to_index;
-  uint32_t *index_chain;
-  void *keys;
-  void *values;
-};
+//#define MIN_KEY_VALUE_STORAGE_SIZE 16
+//#define MIN_HASH_SIZE 32
 
 /*
 =================
@@ -49,7 +37,7 @@ GetKeyImpl
 =================
 */
 void *GetKeyImpl(hash_map_t *map, uint32_t index) {
-  return (byte *)map->keys + (map->key_size * index);
+  return (uint8_t *)map->keys + (map->key_size * index);
 }
 
 /*
@@ -58,7 +46,7 @@ GetValueImpl
 =================
 */
 void *GetValueImpl(hash_map_t *map, uint32_t index) {
-  return (byte *)map->values + (map->value_size * index);
+  return (uint8_t *)map->values + (map->value_size * index);
 }
 
 /*
@@ -87,28 +75,28 @@ static void Rehash(hash_map_t *map, const uint32_t new_size) {
 ExpandKeyValueStorage
 =================
 */
-static void ExpandKeyValueStorage(hash_map_t *map, const uint32_t new_size) {
-  map->keys = Mem_Realloc(map->keys, new_size * map->key_size);
-  map->values = Mem_Realloc(map->values, new_size * map->value_size);
-  map->index_chain = Mem_Realloc(map->index_chain, new_size * sizeof(uint32_t));
-  map->key_value_storage_size = new_size;
-}
+//static void ExpandKeyValueStorage(hash_map_t *map, const uint32_t new_size) {
+  //map->keys = Mem_Realloc(map->keys, new_size * map->key_size);
+  //map->values = Mem_Realloc(map->values, new_size * map->value_size);
+  //map->index_chain = Mem_Realloc(map->index_chain, new_size * sizeof(uint32_t));
+  //map->key_value_storage_size = new_size;
+//}
 
 /*
 =================
 CreateImpl
 =================
 */
-hash_map_t *CreateImpl(const uint32_t key_size, const uint32_t value_size,
-                       uint32_t (*hasher)(const void *const),
-                       qboolean (*comp)(const void *const, const void *const)) {
-  hash_map_t *map = Mem_Alloc(sizeof(hash_map_t));
-  map->key_size = key_size;
-  map->value_size = value_size;
-  map->hasher = hasher;
-  map->comp = comp;
-  return map;
-}
+//hash_map_t *CreateImpl(const uint32_t key_size, const uint32_t value_size,
+                       //uint32_t (*hasher)(const void *const),
+                       //bool (*comp)(const void *const, const void *const)) {
+  //hash_map_t *map = memory::alloc(sizeof(hash_map_t));
+  //map->key_size = key_size;
+  //map->value_size = value_size;
+  //map->hasher = hasher;
+  //map->comp = comp;
+  //return map;
+//}
 
 /*
 =================
@@ -142,48 +130,48 @@ void Reserve(hash_map_t *map, int capacity) {
 InsertImpl
 =================
 */
-qboolean InsertImpl(hash_map_t *map, const uint32_t key_size,
-                    const uint32_t value_size, const void *const key,
-                    const void *const value) {
-  assert(map->key_size == key_size);
-  assert(map->value_size == value_size);
+//bool InsertImpl(hash_map_t *map, const uint32_t key_size,
+                    //const uint32_t value_size, const void *const key,
+                    //const void *const value) {
+  //assert(map->key_size == key_size);
+  //assert(map->value_size == value_size);
 
-  if (map->num_entries >= map->key_value_storage_size)
-    ExpandKeyValueStorage(map, q_max(map->key_value_storage_size * 2,
-                                     MIN_KEY_VALUE_STORAGE_SIZE));
-  if ((map->num_entries + (map->num_entries / 4)) >= map->hash_size)
-    Rehash(map, q_max(map->hash_size * 2, MIN_HASH_SIZE));
+  //if (map->num_entries >= map->key_value_storage_size)
+    //ExpandKeyValueStorage(map, q_max(map->key_value_storage_size * 2,
+                                     //MIN_KEY_VALUE_STORAGE_SIZE));
+  //if ((map->num_entries + (map->num_entries / 4)) >= map->hash_size)
+    //Rehash(map, q_max(map->hash_size * 2, MIN_HASH_SIZE));
 
-  const uint32_t hash = map->hasher(key);
-  const uint32_t hash_index = hash & (map->hash_size - 1);
-  {
-    uint32_t storage_index = map->hash_to_index[hash_index];
-    while (storage_index != UINT32_MAX) {
-      const void *const storage_key = GetKeyImpl(map, storage_index);
-      if (map->comp ? map->comp(key, storage_key)
-                    : (memcmp(key, storage_key, key_size) == 0)) {
-        memcpy(GetValueImpl(map, storage_index), value, value_size);
-        return true;
-      }
-      storage_index = map->index_chain[storage_index];
-    }
-  }
+  //const uint32_t hash = map->hasher(key);
+  //const uint32_t hash_index = hash & (map->hash_size - 1);
+  //{
+    //uint32_t storage_index = map->hash_to_index[hash_index];
+    //while (storage_index != UINT32_MAX) {
+      //const void *const storage_key = GetKeyImpl(map, storage_index);
+      //if (map->comp ? map->comp(key, storage_key)
+                    //: (memcmp(key, storage_key, key_size) == 0)) {
+        //memcpy(GetValueImpl(map, storage_index), value, value_size);
+        //return true;
+      //}
+      //storage_index = map->index_chain[storage_index];
+    //}
+  //}
 
-  map->index_chain[map->num_entries] = map->hash_to_index[hash_index];
-  map->hash_to_index[hash_index] = map->num_entries;
-  memcpy(GetKeyImpl(map, map->num_entries), key, key_size);
-  memcpy(GetValueImpl(map, map->num_entries), value, value_size);
-  ++map->num_entries;
+  //map->index_chain[map->num_entries] = map->hash_to_index[hash_index];
+  //map->hash_to_index[hash_index] = map->num_entries;
+  //memcpy(GetKeyImpl(map, map->num_entries), key, key_size);
+  //memcpy(GetValueImpl(map, map->num_entries), value, value_size);
+  //++map->num_entries;
 
-  return false;
-}
+  //return false;
+//}
 
 /*
 =================
 EraseImpl
 =================
 */
-qboolean EraseImpl(hash_map_t *map, const uint32_t key_size,
+bool EraseImpl(hash_map_t *map, const uint32_t key_size,
                    const void *const key) {
   assert(key_size == map->key_size);
   if (map->num_entries == 0)
@@ -219,7 +207,7 @@ qboolean EraseImpl(hash_map_t *map, const uint32_t key_size,
         if (map->hash_to_index[last_hash_index] == last_index)
           map->hash_to_index[last_hash_index] = map->index_chain[last_index];
         else {
-          qboolean found = false;
+          bool found = false;
           for (uint32_t last_storage_index =
                    map->hash_to_index[last_hash_index];
                last_storage_index != UINT32_MAX;
@@ -274,7 +262,7 @@ void *LookupImpl(hash_map_t *map, const uint32_t key_size,
     const void *const storage_key = GetKeyImpl(map, storage_index);
     if (map->comp ? map->comp(key, storage_key)
                   : (memcmp(key, storage_key, key_size) == 0))
-      return (byte *)map->values + (storage_index * map->value_size);
+      return (uint8_t *)map->values + (storage_index * map->value_size);
     storage_index = map->index_chain[storage_index];
   }
 
@@ -305,7 +293,7 @@ TestAssert
 BasicTest
 =================
 */
-static void BasicTest(const qboolean reserve) {
+static void BasicTest(const bool reserve) {
   const int TEST_SIZE = 1000;
   hash_map_t *map = Create(int32_t, int64_t, &HashInt32, NULL);
   if (reserve)

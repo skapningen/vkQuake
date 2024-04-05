@@ -44,7 +44,7 @@ alloc
 void *alloc(const size_t size) { return mi_calloc(1, size); }
 
 void *alloc_nonzero(const size_t size);
-void *realloc(void *ptr, const size_t size);
+void *realloc(void *ptr, const size_t size) { return mi_realloc(ptr, size);}
 
 /*
 ====================
