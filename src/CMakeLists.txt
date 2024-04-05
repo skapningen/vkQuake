@@ -17,9 +17,10 @@ target_sources(
           common.cpp
           console.cpp
           cvar.cpp
+          hash_map.cpp
           memory.cpp
           progs.cpp
-          pr_comp.cpp
+          progs-comp.cpp
           quake_stddef.cpp
           quake_string.cpp)
 

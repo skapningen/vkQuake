@@ -156,4 +156,3 @@ void Print(const char *text);
 
 } // namespace Cmd
 
-#endif /* _QUAKE_CMD_H */

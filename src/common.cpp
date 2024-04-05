@@ -54,7 +54,7 @@ bool multiuser;
 export namespace common {
 
 // TODO: replace with standard templates
-//     #define GENERIC_TYPES(x, separator) \
+//      #define GENERIC_TYPES(x, separator) \
   //x(int, i) separator x(unsigned int, u) \
   //separator x(long, l) \
   //separator x(unsigned long, ul) \
@@ -136,13 +136,13 @@ export namespace common {
     next_ptr = &chained.pNext;                                                 \
   }
 
-typedef struct sizebuf_s {
+struct sizebuf_t {
   bool allowoverflow; // if false, do a Sys_Error
   bool overflowed;    // set to true if the buffer size failed
   uint8_t *data;
   int maxsize;
   int cursize;
-} sizebuf_t;
+};
 
 void SZ_Alloc(sizebuf_t *buf, int startsize);
 void SZ_Free(sizebuf_t *buf);
@@ -207,7 +207,7 @@ void MSG_WriteAngle(sizebuf_t *sb, float f, unsigned int flags);
 void MSG_WriteAngle16(sizebuf_t *sb, float f, unsigned int flags); // johnfitz
 void MSG_WriteEntity(sizebuf_t *sb, unsigned int index,
                      unsigned int pext2); // spike
-//struct entity_state_s;
+// struct entity_state_s;
 void MSG_WriteStaticOrBaseLine(sizebuf_t *buf, int idx,
                                struct entity_state_s *state,
                                unsigned int protocol_pext2,

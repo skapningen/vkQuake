@@ -1046,7 +1046,7 @@ void ED_LoadFromFile(const char *data) {
     }
 
     pr_global_struct->self = EDICT_TO_PROG(ent);
-    PR_ExecuteProgram(func - qcvm->functions);
+    execute_program(func - qcvm->functions);
   }
 
   Con_DPrintf("%i entities inhibited\n", inhibit);
@@ -1066,7 +1066,7 @@ void PR_SwitchQCVM(qcvm_t *nvm) {
 }
 #endif
 
-void PR_ClearProgs(qcvm_t *vm) {
+void clear_progs(qcvm_t *vm) {
   qcvm_t *oldvm = qcvm;
   if (!vm->progs)
     return; // wasn't loaded.
@@ -1279,7 +1279,7 @@ qboolean PR_LoadProgs(const char *filename, qboolean fatal,
                       size_t numbuiltins) {
   int i;
 
-  PR_ClearProgs(qcvm); // just in case.
+  clear_progs(qcvm); // just in case.
 
   qcvm->progs = (dprograms_t *)COM_LoadFile(filename, NULL);
   if (!qcvm->progs)
@@ -1459,7 +1459,7 @@ qboolean PR_LoadProgs(const char *filename, qboolean fatal,
 PR_Init
 ===============
 */
-void PR_Init(void) {
+void init(void) {
   Cmd_AddCommand("edict", ED_PrintEdict_f);
   Cmd_AddCommand("edicts", ED_PrintEdicts);
   Cmd_AddCommand("edictcount", ED_Count);
